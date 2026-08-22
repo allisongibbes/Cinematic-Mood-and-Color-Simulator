@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<style>
+  body {
+    font-family: system-ui, -apple-system, sans-serif;
+    background: #1e1e1e;
+    color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+  }
+  .scene-container {
+    width: 100%;
+    max-width: 800px;
+    overflow: hidden;
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+    margin-bottom: 20px;
+  }
+  #cinematic-scene {
+    width: 100%;
+    display: block;
+    transition: filter 0.5s ease-in-out;
+  }
+  .controls-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  button {
+    background: #333;
+    color: white;
+    border: 1px solid #555;
+    padding: 10px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.2s;
+  }
+  button:hover { background: #555; }
+  .active-preset { background: #007bff; border-color: #0056b3; }
+  .slider-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 15px;
+  }
+  input[type=range] { width: 150px; margin-top: 8px; }
+</style>
+</head>
+<body>
+
+  <h2>Cinematic Color Grading Simulator</h2>
+  
+  <div class="scene-container">
+    <!-- A moody, cinematic placeholder image from Unsplash -->
+    <img id="cinematic-scene" src="https://images.unsplash.com/photo-1536440136628-849c177e76a1?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Cinematic Scene">
+  </div>
+
+  <div class="controls-row" id="preset-buttons">
+    <button onclick="applyPreset('scifi', this)">Sci-Fi (Teal/Orange)</button>
+    <button onclick="applyPreset('her', this)">Warm (Like 'Her')</button>
+    <button onclick="applyPreset('bleak', this)">Bleak / Dystopian</button>
+    <button onclick="applyPreset('reset', this)" class="active-preset">Original (Reset)</button>
+  </div>
+
+  <div class="controls-row">
+    <div class="slider-group">
+      <label for="sat">Saturation</label>
+      <input type="range" id="sat" min="0" max="200" value="100" oninput="updateCustom()">
+    </div>
+    <div class="slider-group">
+      <label for="con">Contrast</label>
+      <input type="range" id="con" min="50" max="200" value="100" oninput="updateCustom()">
+    </div>
+  </div>
+
+  <script>
+    const scene = document.getElementById('cinematic-scene');
+    const satSlider = document.getElementById('sat');
+    const conSlider = document.getElementById('con');
+    const buttons = document.querySelectorAll('#preset-buttons button');
+    
+    let baseFilter = '';
+
+    function updateCustom() {
+      // Remove active state from preset buttons if user moves sliders manually
+      buttons.forEach(btn => btn.classList.remove('active-preset'));
+      applyFilters();
+    }
+
+    function applyFilters() {
+      scene.style.filter = `${baseFilter} saturate(${satSlider.value}%) contrast(${conSlider.value}%)`;
+    }
+
+    function applyPreset(preset, btnElement) {
+      buttons.forEach(btn => btn.classList.remove('active-preset'));
+      btnElement.classList.add('active-preset');
+
+      if (preset === 'scifi') {
+        baseFilter = 'sepia(80%) hue-rotate(180deg)';
+        satSlider.value = 120;
+        conSlider.value = 130;
+      } else if (preset === 'her') {
+        baseFilter = 'sepia(50%) hue-rotate(-20deg)';
+        satSlider.value = 160;
+        conSlider.value = 110;
+      } else if (preset === 'bleak') {
+        baseFilter = 'grayscale(100%)';
+        satSlider.value = 0;
+        conSlider.value = 150;
+      } else {
+        baseFilter = '';
+        satSlider.value = 100;
+        conSlider.value = 100;
+      }
+      applyFilters();
+    }
+  </script>
+</body>
+</html>

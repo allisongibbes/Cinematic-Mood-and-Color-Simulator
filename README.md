@@ -1,1 +1,1 @@
-# 3.2-Cinematic-Mood-and-Color-Simulator
+Cinematic-Mood-and-Color-Simulator
